@@ -1,0 +1,31 @@
+{
+  "name": "proxvoice",
+  "productName": "ProxVoice",
+  "version": "0.1",
+  "description": "Discord Based Proximity Voice Chat for Minecraft 1.12.2",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
+  },
+  "keywords": [],
+  "author": {
+    "name": "Adit Sachde",
+    "email": "23707194+aditsachde@users.noreply.github.com"
+  },
+  "license": "GPL-3.0-or-later",
+  "config": {
+    "forge": "./forge.config.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "electron": "11.0.5"
+  }
+}

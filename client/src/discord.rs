@@ -29,7 +29,7 @@ impl Discord {
     #[cfg(target_os = "windows")]
     fn new_socket_file() -> Result<SocketFile, Box<dyn Error>> {
         let os_str = OsStr::new(r#"\\.\pipe\discord-ipc-0"#);
-        let pipe = PipeClient::connect_ms(&os_str, 1000);
+        let pipe = PipeClient::connect_ms(&os_str, 1000)?;
         Ok(SocketFile::File(pipe))
         //Ok(SocketFile::File(File::open(Discord::get_ipc_path())?))
     }

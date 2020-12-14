@@ -38,7 +38,7 @@ impl Discord {
 
     fn get_ipc_path() -> PathBuf {
         match OS {
-            "windows" => Path::new("\\\\?\\pipe\\discord-ipc-0").to_path_buf(),
+            "windows" => Path::new("\\\\.\\pipe\\discord-ipc-0").to_path_buf(),
             _ => {
                 let mut ipc_path = env::temp_dir();
                 ipc_path.push("discord-ipc-0");

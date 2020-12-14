@@ -4,10 +4,10 @@ defaults:
   run:
     working-directory: mod
 
-on: push
-#  push:
-#    paths:
-#      - "client/**"
+on:
+  push:
+    paths:
+      - "mod/**"
 
 jobs:
   build:

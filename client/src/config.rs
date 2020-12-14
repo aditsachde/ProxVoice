@@ -11,7 +11,7 @@ pub struct Config {
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct User {
-    pub username: String,
+    pub name: String,
     pub boost: u32,
     pub discord_id: String,
     pub minecraft_id: String

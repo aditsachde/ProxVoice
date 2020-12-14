@@ -2,7 +2,7 @@
   "modid": "proxvoice",
   "name": "ProxVoice",
   "description": "Lets you craft dirt into diamonds. This is a traditional mod that has existed for eons. It is ancient. The holy Notch created it. Jeb rainbowfied it. Dinnerbone made it upside down. Etc.",
-  "version": "0.1",
+  "version": "0.2",
   "mcversion": "1.12.2",
   "logoFile": "assets/examplemod/textures/logo.png",
   "url": "minecraftforge.net/",

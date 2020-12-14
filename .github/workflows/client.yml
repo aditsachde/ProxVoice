@@ -4,10 +4,10 @@ defaults:
   run:
     working-directory: client
 
-on: push
-#  push:
-#    paths:
-#      - "client/**"
+on:
+  push:
+    paths:
+      - "client/**"
 
 jobs:
   build:
@@ -18,26 +18,27 @@ jobs:
           - ubuntu-latest
           - macos-latest
           - windows-latest
-        #target:
-        #  - x86_64-apple-darwin
-        #  - x86_64-unknown-linux-gnu
-        #  - x86_64-pc-windows-msvc
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-          #target: ${{ matrix.target }}
           override: true
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            client/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions-rs/cargo@v1
         with:
-          use-cross: true
           command: build
-          args: --manifest-path client/Cargo.toml --release #--target=${{ matrix.target }} 
+          args: --manifest-path client/Cargo.toml --release
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Client
+          name: client-${{ runner.os }}
           path: |
             client/target/release/proxvoice
             client/target/release/proxvoice.exe

@@ -1,5 +1,6 @@
 package com.aditsachde.proxvoice;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -24,7 +25,7 @@ import java.util.List;
 public class ProxVoice {
     public static final String MODID = "proxvoice";
     public static final String NAME = "ProxVoice";
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "0.2";
 
     private static Logger logger;
     private int ticks;
@@ -60,13 +61,15 @@ public class ProxVoice {
             List<EntityPlayer> players = player.world.getEntitiesWithinAABB(EntityPlayer.class, bb);
 
             for (EntityPlayer otherPlayer : players) {
-                int distance = (int) player.getDistance(otherPlayer);
-                String send = otherPlayer.getUniqueID().toString().replace("-", "") + " " + distance;
+                if (!otherPlayer.equals(Minecraft.getMinecraft().player)) {
+                    int distance = (int) player.getDistance(otherPlayer);
+                    String send = otherPlayer.getUniqueID().toString().replace("-", "") + " " + distance;
 
-                try {
-                    socket.send(send);
-                } catch (Exception e) {
-                    System.out.println(e.toString());
+                    try {
+                        socket.send(send);
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                    }
                 }
             }
 
@@ -85,10 +88,10 @@ public class ProxVoice {
         public static int port = 40544;
 
         @Config.RangeInt(min = 10, max = 200)
-        public static int ticks = 30;
+        public static int ticks = 20;
 
         @Config.RangeInt(min = 5, max = 300)
-        public static int radius = 32;
+        public static int radius = 64;
     }
 
 }

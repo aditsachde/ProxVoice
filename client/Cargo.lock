@@ -272,6 +272,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "named_pipe"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ad9c443cce91fc3e12f017290db75dde490d685cdaaf508d7159d7cf41f0eb2b"
+dependencies = [
+ "winapi",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -364,6 +373,7 @@ name = "proxvoice"
 version = "0.1.0"
 dependencies = [
  "maplit",
+ "named_pipe",
  "restruct",
  "restruct_derive",
  "serde",

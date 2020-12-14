@@ -1,7 +1,10 @@
+#[cfg(target_os = "windows")]
+use named_pipe::PipeClient;
 use socket2::{Domain, SockAddr, Socket, Type};
 use std::{
     env::{self, consts::OS},
     error::Error,
+    ffi::OsStr,
     fs::File,
     io::{Read, Write},
     net::Shutdown,
@@ -25,7 +28,10 @@ impl Discord {
 
     #[cfg(target_os = "windows")]
     fn new_socket_file() -> Result<SocketFile, Box<dyn Error>> {
-        Ok(SocketFile::File(File::open(Discord::get_ipc_path())?))
+        let os_str = OsStr::new(r#"\\.\pipe\discord-ipc-0"#);
+        let pipe = PipeClient::connect_ms(&os_str, 1000);
+        Ok(SocketFile::File(pipe))
+        //Ok(SocketFile::File(File::open(Discord::get_ipc_path())?))
     }
 
     #[cfg(not(target_os = "windows"))]
@@ -47,29 +53,34 @@ impl Discord {
         }
     }
 
+    #[cfg(target_os = "windows")]
+    pub fn send(&mut self, opcode: i32, payload: &String) -> Result<(), Box<dyn Error>> {
+        let msg = Discord::encode(opcode, payload)?;
+        match self.socket_file {
+            SocketFile::File(ref mut file) => {
+                file.write(&msg[..])?;
+                let _ = file.flush()?;
+            }
+            _ => {}
+        }
+        Ok(())
+    }
+
+    #[cfg(not(target_os = "windows"))]
     pub fn send(&mut self, opcode: i32, payload: &String) -> Result<(), Box<dyn Error>> {
         let msg = Discord::encode(opcode, payload)?;
         match self.socket_file {
             SocketFile::Socket(ref socket) => {
                 socket.send(&msg[..])?;
             }
-            SocketFile::File(ref mut file) => {
-                file.write(&msg[..])?;
-                let _ = file.flush()?;
-            }
+            _ => {}
         }
         Ok(())
     }
 
+    #[cfg(target_os = "windows")]
     pub fn recv(&mut self) -> Result<String, Box<dyn Error>> {
         match self.socket_file {
-            SocketFile::Socket(ref socket) => {
-                let mut response: [u8; 2048] = [0; 2048];
-                socket.recv(&mut response)?;
-                Ok(String::from_utf8_lossy(&response[8..])
-                    .trim_matches(char::from(0))
-                    .to_string())
-            }
             SocketFile::File(ref mut file) => {
                 let mut header: [u8; 8] = [0; 8];
                 let mut header_size = 8;
@@ -88,6 +99,21 @@ impl Discord {
                     .trim_matches(char::from(0))
                     .to_string())
             }
+            _ => Ok(String::from("Should be unreachable")),
+        }
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    pub fn recv(&mut self) -> Result<String, Box<dyn Error>> {
+        match self.socket_file {
+            SocketFile::Socket(ref socket) => {
+                let mut response: [u8; 2048] = [0; 2048];
+                socket.recv(&mut response)?;
+                Ok(String::from_utf8_lossy(&response[8..])
+                    .trim_matches(char::from(0))
+                    .to_string())
+            }
+            _ => Ok(String::from("Should be unreachable")),
         }
     }
 
@@ -121,10 +147,16 @@ impl Discord {
     }
 }
 
+#[cfg(not(target_os = "windows"))]
 #[derive(Debug)]
 pub enum SocketFile {
     Socket(Socket),
-    File(File),
+}
+
+#[cfg(target_os = "windows")]
+#[derive(Debug)]
+pub enum SocketFile {
+    File(PipeClient),
 }
 
 #[derive(restruct_derive::Struct)]

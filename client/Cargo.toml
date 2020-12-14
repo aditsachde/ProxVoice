@@ -16,6 +16,9 @@ socket2 = {version = "0.3.17", features = ["unix"]}
 ureq = "1.5.4"
 uuid = {version = "0.8", features = ["serde", "v4"]}
 
+[target.'cfg(windows)'.dependencies]
+named_pipe = "0.4.1"
+
 [dependencies.zmq]
 features = ['vendored']
 version = "0.9.2"

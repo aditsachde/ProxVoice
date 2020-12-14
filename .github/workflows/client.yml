@@ -28,9 +28,7 @@ jobs:
         with:
           toolchain: nightly
           #target: ${{ matrix.target }}
-          #override: true
-      - run: echo $TARGET_CC 
-      - run: echo $TARGET_AR
+          override: true
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true
@@ -40,6 +38,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Client
-          path: | 
+          path: |
             client/target/release/proxvoice
             client/target/release/proxvoice.exe

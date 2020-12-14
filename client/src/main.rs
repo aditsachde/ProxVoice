@@ -145,7 +145,9 @@ struct State {
 impl State {
     fn new() -> Result<State, Box<dyn Error>> {
         let config = Config::new(Path::new("proxvoice.config.yml"))?;
+        println!("{:#?}", config);
         let discord = Discord::new(&config.client_id)?;
+        println!("{:#?}", discord);
         let mut state = State {
             config,
             discord,

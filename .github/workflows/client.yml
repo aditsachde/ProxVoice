@@ -1,0 +1,38 @@
+name: Build Mod
+
+defaults:
+  run:
+    working-directory: client
+
+on: 
+  push:
+    paths:
+      - "client/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-apple-darwin
+          - x86_64-unknown-linux-gnu
+          - x86_64-pc-windows-gnu
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          target: ${{ matrix.target }}
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target=${{ matrix.target }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Client
+          path: client/target/release/proxvoice*

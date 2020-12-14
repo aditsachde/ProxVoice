@@ -1,0 +1,21 @@
+[package]
+authors = ["Adit Sachde <23707194+aditsachde@users.noreply.github.com>"]
+edition = "2018"
+name = "proxvoice"
+version = "0.1.0"
+
+[dependencies]
+maplit = "1.0.2"
+restruct = "0.1.1"
+restruct_derive = "0.1.1"
+serde = "1.0.118"
+serde_json = "1.0.60"
+serde_urlencoded = "0.7.0"
+serde_yaml = "0.8.14"
+socket2 = {version = "0.3.17", features = ["unix"]}
+ureq = "1.5.4"
+uuid = {version = "0.8", features = ["serde", "v4"]}
+
+[dependencies.zmq]
+features = ['vendored']
+version = "0.9.2"

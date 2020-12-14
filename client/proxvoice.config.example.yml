@@ -1,0 +1,8 @@
+client_id: "clientid"
+client_secret: "clientsecret"
+channel_id: "channelid"
+users:
+  - username: "username"
+    boost: 100
+    discord_id: "dcid"
+    minecraft_id: "mcid"

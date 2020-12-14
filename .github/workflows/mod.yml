@@ -6,8 +6,6 @@ defaults:
 
 on: 
   push:
-    branches:
-      - "master"
     paths:
       - "mod/**"
 

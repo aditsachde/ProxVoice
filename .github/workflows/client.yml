@@ -17,8 +17,7 @@ jobs:
         target:
           - x86_64-apple-darwin
           - x86_64-unknown-linux-gnu
-          - x86_64-pc-windows-msvc
-
+          - x86_64-pc-windows-gnu
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -26,6 +25,8 @@ jobs:
           toolchain: nightly
           target: ${{ matrix.target }}
           override: true
+      - run: echo $TARGET_CC 
+      - run: echo $TARGET_AR
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true

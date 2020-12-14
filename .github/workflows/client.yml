@@ -1,23 +1,24 @@
-name: Build Mod
+name: Build Client
 
 defaults:
   run:
     working-directory: client
 
-on: 
-  push:
-    paths:
-      - "client/**"
+on: push
+#  push:
+#    paths:
+#      - "client/**"
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         target:
           - x86_64-apple-darwin
           - x86_64-unknown-linux-gnu
-          - x86_64-pc-windows-gnu
+          #- x86_64-pc-windows-gnu
+          - x86_64-pc-windows-msvc
 
     steps:
       - uses: actions/checkout@v2
@@ -30,7 +31,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --target=${{ matrix.target }}
+          args: --manifest-path client/Cargo.toml --release --target=${{ matrix.target }} 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:

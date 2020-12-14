@@ -11,29 +11,35 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        target:
-          - x86_64-apple-darwin
-          - x86_64-unknown-linux-gnu
-          - x86_64-pc-windows-gnu
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        #target:
+        #  - x86_64-apple-darwin
+        #  - x86_64-unknown-linux-gnu
+        #  - x86_64-pc-windows-msvc
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-          target: ${{ matrix.target }}
-          override: true
+          #target: ${{ matrix.target }}
+          #override: true
       - run: echo $TARGET_CC 
       - run: echo $TARGET_AR
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true
           command: build
-          args: --manifest-path client/Cargo.toml --release --target=${{ matrix.target }} 
+          args: --manifest-path client/Cargo.toml --release #--target=${{ matrix.target }} 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Client
-          path: client/target/release/proxvoice*
+          path: | 
+            client/target/release/proxvoice
+            client/target/release/proxvoice.exe

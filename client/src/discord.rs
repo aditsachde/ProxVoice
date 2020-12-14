@@ -135,6 +135,13 @@ impl Discord {
         self.recv()
     }
 
+    #[cfg(target_os = "windows")]
+    pub fn disconnect(mut self) -> Result<(), Box<dyn Error>> {
+        self.send(2, &r#"{}"#.to_string())?;
+        Ok(())
+    }
+
+    #[cfg(not(target_os = "windows"))]
     pub fn disconnect(mut self) -> Result<(), Box<dyn Error>> {
         self.send(2, &r#"{}"#.to_string())?;
         match self.socket_file {

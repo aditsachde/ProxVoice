@@ -23,16 +23,17 @@ impl Discord {
         })
     }
 
+    #[cfg(target_os = "windows")]
     fn new_socket_file() -> Result<SocketFile, Box<dyn Error>> {
-        match OS {
-            "windows" => Ok(SocketFile::File(File::open(Discord::get_ipc_path())?)),
-            _ => {
-                let socket = Socket::new(Domain::unix(), Type::stream(), None)?;
-                let socket_addr = SockAddr::unix(Discord::get_ipc_path())?;
-                socket.connect(&socket_addr)?;
-                Ok(SocketFile::Socket(socket))
-            }
-        }
+        Ok(SocketFile::File(File::open(Discord::get_ipc_path())?))
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    fn new_socket_file() -> Result<SocketFile, Box<dyn Error>> {
+        let socket = Socket::new(Domain::unix(), Type::stream(), None)?;
+        let socket_addr = SockAddr::unix(Discord::get_ipc_path())?;
+        socket.connect(&socket_addr)?;
+        Ok(SocketFile::Socket(socket))
     }
 
     fn get_ipc_path() -> PathBuf {

@@ -47,22 +47,20 @@ public class ProxVoice {
     }
 
     @SubscribeEvent
-    public void tickEvent(TickEvent.PlayerTickEvent event) {
-        EntityPlayer player = event.player;
-        if (!player.equals(Minecraft.getMinecraft().player)) 
-        {
+    public void tickEvent(TickEvent.ClientTickEvent event) {
         ticks++;
         if (ticks >= CONFIG.ticks) {
             ticks = 0;
         }
         if (ticks == 0) {
+            EntityPlayer player = Minecraft.getMinecraft().player;
             AxisAlignedBB bb = (new AxisAlignedBB(new BlockPos(player)))
                     .expand(CONFIG.radius, CONFIG.radius, CONFIG.radius)
                     .expand(-CONFIG.radius, -CONFIG.radius, -CONFIG.radius);
             List<EntityPlayer> players = player.world.getEntitiesWithinAABB(EntityPlayer.class, bb);
 
             for (EntityPlayer otherPlayer : players) {
-                if (!otherPlayer.equals(Minecraft.getMinecraft().player)) {
+                if (!otherPlayer.equals(player)) {
                     int distance = (int) player.getDistance(otherPlayer);
                     String send = otherPlayer.getUniqueID().toString().replace("-", "") + " " + distance;
 
@@ -79,7 +77,6 @@ public class ProxVoice {
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
-        }
         }
     }
 

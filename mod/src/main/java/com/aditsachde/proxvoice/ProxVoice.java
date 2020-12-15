@@ -47,7 +47,7 @@ public class ProxVoice {
     }
 
     @SubscribeEvent
-    public void tickEvent(TickEvent.ClientTickEvent event) {
+    public void tickEvent(TickEvent.WorldTickEvent event) {
         ticks++;
         if (ticks >= CONFIG.ticks) {
             ticks = 0;

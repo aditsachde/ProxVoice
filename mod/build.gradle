@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
-version = '0.1'
+version = '0.2'
 group = 'com.aditsachde.proxvoice' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'proxvoice'
 
@@ -65,9 +65,7 @@ dependencies {
     // compile "some.group:artifact:version:classifier"
     // compile "some.group:artifact:version"
 
-    //implementation group: 'org.bytedeco', name: 'javacpp', version: '1.5.4'
-    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-    //compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    // Vendored
     // https://mvnrepository.com/artifact/org.zeromq/jeromq
     //compile group: 'org.zeromq', name: 'jeromq', version: '0.5.2'
 
@@ -91,12 +89,12 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
+            "Specification-Title": "proxvoice",
+            "Specification-Vendor": "aditsachde",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
+            "Implementation-Vendor" :"aditsachde",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }

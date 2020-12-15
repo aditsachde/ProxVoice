@@ -4,10 +4,8 @@ defaults:
   run:
     working-directory: mod
 
-on: 
+on:
   push:
-    branches:
-      - "master"
     paths:
       - "mod/**"
 

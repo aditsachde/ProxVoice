@@ -61,51 +61,40 @@ jobs:
           asset_name: ${{ steps.name.outputs.jar }}
           asset_content_type: application/java-archive
 
-  linux:
+  client:
     runs-on: ubuntu-latest
     needs: release
-
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+          
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions-rs/toolchain@v1
         with:
-          python-version: '3.8'
-      - uses: actions/cache@v2
+          toolchain: nightly
+          override: true
+      - uses: actions-rs/cargo@v1
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Build Server
-        run: |
-          cd server
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          pyinstaller --clean -y webserver.spec
-      - name: Move server files
-        run: mv server/dist client/src/dist
-
-      - uses: actions/setup-node@v1
+          command: build
+          args: --manifest-path client/Cargo.toml --release
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          REQUEST_SECRET: ${{ secrets.REQUEST_SECRET }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
         with:
-          node-version: '14'
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Build
-        run: |
-          cd client
-          yarn install
-          yarn make
-      - name: Get Zip name
+          name: client-${{ runner.os }}
+          path: |
+            client/target/release/proxvoice
+            client/target/release/proxvoice.exe
+      - name: Get Binary name
         id: name
         run: |
-          echo "::set-output name=zip::$(ls client/out/make/zip/linux/x64)"
+          echo "::set-output name=binary::$(ls client/target/release)"
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
@@ -113,122 +102,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }} 
-          asset_path: client/out/make/zip/linux/x64/${{ steps.name.outputs.zip }}
-          asset_name: ${{ steps.name.outputs.zip }}
-          asset_content_type: application/zip
-
-  macos:
-    runs-on: macos-latest
-    needs: release
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - uses: actions/cache@v2
-        with:
-          path: ~/Library/Caches/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Build Server
-        run: |
-          cd server
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
-          pyinstaller --clean -y webserver.spec
-      - name: Move server files
-        run: mv server/dist client/src/dist
-        
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14'
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Build
-        run: |
-          cd client
-          yarn install
-          yarn make
-      - name: Get Zip name
-        id: name
-        run: |
-          echo "::set-output name=zip::$(ls client/out/make/zip/darwin/x64)"
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }} 
-          asset_path: client/out/make/zip/darwin/x64/${{ steps.name.outputs.zip }}
-          asset_name: ${{ steps.name.outputs.zip }}
-          asset_content_type: application/zip
-
-  windows:
-    runs-on: windows-latest
-    needs: release
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      - uses: actions/cache@v2
-        with:
-          path: ~\AppData\Local\pip\Cache
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - name: Build Server
-        run: |
-          Set-Location server
-          Python -m pip install --upgrade pip
-          Python -m pip install -r requirements.txt
-          pyinstaller --clean -y webserver.spec
-        shell: powershell
-      - name: Move server files
-        run: Move-Item server\dist client\src\dist
-        shell: powershell
-
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14'
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: Write-Output "::set-output name=dir::$(yarn cache dir)"
-        shell: powershell
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Build
-        run: |
-          Set-Location client
-          yarn install
-          yarn make
-      - name: Get Zip name
-        id: name
-        run: |
-          Write-Output "::set-output name=zip::$(Get-ChildItem -Name client\out\make\zip\win32\x64)"
-        shell: powershell
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }} 
-          asset_path: client\out\make\zip\win32\x64\${{ steps.name.outputs.zip }}
-          asset_name: ${{ steps.name.outputs.zip }}
-          asset_content_type: application/zip
+          asset_path: client/target/release/${{ steps.name.outputs.binary }}
+          asset_name: ${{ github.ref }}-${{ steps.name.outputs.binary }}
+          asset_content_type: application/octet-stream

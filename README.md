@@ -6,7 +6,7 @@ Discord based proximity voice chat for Minecraft 1.12.2
 
 ## Usage
 
-Download and place the ProxVoice jar in the Forge mod folder. Download and launch the desktop client that maches your OS. Make sure Discord is running before starting the client.
+Download and place the ProxVoice jar in the Forge mod folder. Download and launch the desktop binary that maches your OS. Make sure Discord and Minecraft are running before starting the client. Additionally, make sure `proxvoice.config.yml` exists in the same directory as the binary.
 
 ### Creating and Managing Lobbies
 
@@ -18,7 +18,7 @@ Releases are automatically handled through Github Actions, however, no component
 
 ## Architecture
 
-ProxVoice is split in two parts – the Minecraft mod and the desktop client – as the Discord Game SDK does not work easily with Java. It is completely client side.
+ProxVoice is split in two parts – the Minecraft mod and the desktop client.
 
 ### Mod
 
@@ -26,7 +26,7 @@ The mod simply takes player distances and publishes them on a ZeroMQ Pub/Sub soc
 
 ### Desktop Client
 
-The UI is provided by a very simple electron app located in the client directory. The actual logic is provided a python webserver, located in the server directory. The server is bundled into the client on build.
+Currently, this is a rust binary that does not provide a GUI. Config is specified using `proxvoice.config.yml`
 
 ## License
 

@@ -1,0 +1,6 @@
+channel_id: "channelid"
+users:
+  - name: "name" # Not used, just for reference
+    boost: 100
+    discord_id: "dcid"
+    minecraft_id: "mcid"

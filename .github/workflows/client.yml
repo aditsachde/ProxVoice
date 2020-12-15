@@ -35,6 +35,9 @@ jobs:
         with:
           command: build
           args: --manifest-path client/Cargo.toml --release
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          REQUEST_SECRET: ${{ secrets.REQUEST_SECRET }}
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:

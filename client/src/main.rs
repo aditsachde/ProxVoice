@@ -150,6 +150,7 @@ struct State {
 
 impl State {
     fn new() -> Result<State, Box<dyn Error>> {
+        // Client id is built into the binary
         let client_id = env!("CLIENT_ID");
         let config = Config::new(Path::new("proxvoice.config.yml"))?;
         println!("{:#?}", config);
@@ -179,6 +180,7 @@ impl State {
         if let CommandResponse::Authorize { ref code } = response.command {
             discord_oauth = DiscordOauth {
                 code: code.clone(),
+                // Request secret is built into the binary.
                 secret: String::from(env!("REQUEST_SECRET")),
             };
         } else {

@@ -17,6 +17,9 @@ use uuid::Uuid;
 use zmq;
 
 fn main() {
+    // Send panics to sentry
+    let _guard = sentry::init("https://a427ecf6d5f849fa88f5d6da166baaa6@o155156.ingest.sentry.io/5557327");
+
     let mut state = State::new().unwrap();
     let map = Map::new();
 
@@ -147,9 +150,10 @@ struct State {
 
 impl State {
     fn new() -> Result<State, Box<dyn Error>> {
+        let client_id = env!("CLIENT_ID");
         let config = Config::new(Path::new("proxvoice.config.yml"))?;
         println!("{:#?}", config);
-        let discord = Discord::new(&config.client_id)?;
+        let discord = Discord::new(&String::from(client_id))?; //&config.client_id)?;
         println!("{:#?}", discord);
         let mut state = State {
             config,
@@ -163,7 +167,7 @@ impl State {
         let authorize = Request {
             nonce: Uuid::new_v4(),
             command: CommandReqest::Authorize {
-                client_id: state.config.client_id.clone(),
+                client_id: String::from(client_id), //state.config.client_id.clone(),
                 scopes: vec!["rpc".to_string()],
             },
         };
@@ -174,20 +178,19 @@ impl State {
         let discord_oauth;
         if let CommandResponse::Authorize { ref code } = response.command {
             discord_oauth = DiscordOauth {
-                client_id: state.config.client_id.clone(),
-                client_secret: state.config.client_secret.clone(),
                 code: code.clone(),
-                grant_type: "authorization_code".to_string(),
+                secret: String::from(env!("REQUEST_SECRET")),
             };
         } else {
             panic!("Authorization Invalid");
         }
 
-        let r = ureq::post("https://discord.com/api/v6/oauth2/token")
-            .set("Content-Type", "application/x-www-form-urlencoded")
-            .send_string(&serde_urlencoded::to_string(discord_oauth)?.to_string());
+        let r = ureq::post("http://127.0.0.1:8787")
+            .set("Content-Type", "application/json")
+            .send_string(&serde_json::to_string(&discord_oauth)?.to_string());
         let r = r.into_string()?;
         let r: Value = serde_json::from_str(&r[..])?;
+
 
         match r["access_token"] {
             Value::String(ref token) => {
@@ -211,8 +214,6 @@ impl State {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct DiscordOauth {
-    client_id: String,
-    client_secret: String,
-    grant_type: String,
     code: String,
+    secret: String,
 }

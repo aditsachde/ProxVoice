@@ -1,5 +1,3 @@
-client_id: "clientid"
-client_secret: "clientsecret"
 channel_id: "channelid"
 users:
   - name: "name" # Not used, just for reference

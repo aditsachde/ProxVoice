@@ -3,8 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    pub client_id: String,
-    pub client_secret: String, //Option<String>
+    pub client_id: Option<String>,
     pub channel_id: String,
     pub users: Vec<User>
 }

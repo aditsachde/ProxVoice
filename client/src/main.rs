@@ -187,7 +187,7 @@ impl State {
             panic!("Authorization Invalid");
         }
 
-        let r = ureq::post("http://127.0.0.1:8787")
+        let r = ureq::post("https://proxvoiceauth.sachde.xyz")
             .set("Content-Type", "application/json")
             .send_string(&serde_json::to_string(&discord_oauth)?.to_string());
         let r = r.into_string()?;

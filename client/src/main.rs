@@ -73,6 +73,7 @@ fn main() {
                 let dist = *parts.get(1).unwrap();
                 let dist: u32 = dist.parse().unwrap();
                 let dcid = mcid_dcid.get(mcid);
+                println!("{:#?}", dcid);
                 match dcid {
                     Some(dcid) => {
                         let boost = dcid_boost.get(dcid).unwrap();

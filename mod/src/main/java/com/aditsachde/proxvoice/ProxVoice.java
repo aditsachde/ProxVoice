@@ -48,13 +48,14 @@ public class ProxVoice {
 
     @SubscribeEvent
     public void tickEvent(TickEvent.PlayerTickEvent event) {
+        EntityPlayer player = event.player;
+        if (!player.equals(Minecraft.getMinecraft().player)) 
+        {
         ticks++;
         if (ticks >= CONFIG.ticks) {
             ticks = 0;
         }
         if (ticks == 0) {
-
-            EntityPlayer player = event.player;
             AxisAlignedBB bb = (new AxisAlignedBB(new BlockPos(player)))
                     .expand(CONFIG.radius, CONFIG.radius, CONFIG.radius)
                     .expand(-CONFIG.radius, -CONFIG.radius, -CONFIG.radius);
@@ -78,6 +79,7 @@ public class ProxVoice {
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
+        }
         }
     }
 

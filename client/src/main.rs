@@ -64,6 +64,7 @@ fn main() {
 
         loop {
             let msg = s.recv_string(0).unwrap().unwrap();
+            println!("msg {}", msg);
             if &msg == "frame" {
                 break;
             } else {
@@ -83,6 +84,8 @@ fn main() {
                 }
             }
         }
+
+        println!("{:#?}", users);
 
         for (user, vol) in users {
             let command = Request {

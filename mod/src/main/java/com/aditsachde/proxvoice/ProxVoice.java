@@ -47,7 +47,7 @@ public class ProxVoice {
     }
 
     @SubscribeEvent
-    public void tickEvent(TickEvent.WorldTickEvent event) {
+    public void tickEvent(TickEvent.PlayerTickEvent event) {
         ticks++;
         if (ticks >= CONFIG.ticks) {
             ticks = 0;
@@ -87,7 +87,7 @@ public class ProxVoice {
         public static int port = 40544;
 
         @Config.RangeInt(min = 10, max = 200)
-        public static int ticks = 20;
+        public static int ticks = 40;
 
         @Config.RangeInt(min = 5, max = 300)
         public static int radius = 64;

@@ -44,7 +44,7 @@ fn main() {
 
     let ctx = zmq::Context::new();
     let s = ctx.socket(zmq::SUB).unwrap();
-    s.connect("tcp://127.0.0.1:40544").unwrap();
+    s.connect("tcp://127.0.0.1:40545").unwrap();
     s.set_subscribe(b"").unwrap();
 
     let mut mcid_dcid: HashMap<String, String> = HashMap::new();
@@ -54,7 +54,6 @@ fn main() {
         dcid_boost.insert(user.discord_id.clone(), user.boost);
     }
 
-    let msg = String::from("");
     let mut counter = 0;
     loop {
         let mut users: HashMap<String, f64> = HashMap::new();

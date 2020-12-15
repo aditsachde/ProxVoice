@@ -31,7 +31,6 @@ impl Discord {
         let os_str = OsStr::new(r#"\\.\pipe\discord-ipc-0"#);
         let pipe = PipeClient::connect_ms(&os_str, 1000)?;
         Ok(SocketFile::File(pipe))
-        //Ok(SocketFile::File(File::open(Discord::get_ipc_path())?))
     }
 
     #[cfg(not(target_os = "windows"))]
@@ -61,7 +60,6 @@ impl Discord {
                 file.write(&msg[..])?;
                 let _ = file.flush()?;
             }
-            _ => {}
         }
         Ok(())
     }
@@ -73,7 +71,6 @@ impl Discord {
             SocketFile::Socket(ref socket) => {
                 socket.send(&msg[..])?;
             }
-            _ => {}
         }
         Ok(())
     }
@@ -99,7 +96,6 @@ impl Discord {
                     .trim_matches(char::from(0))
                     .to_string())
             }
-            _ => Ok(String::from("Should be unreachable")),
         }
     }
 
@@ -113,7 +109,6 @@ impl Discord {
                     .trim_matches(char::from(0))
                     .to_string())
             }
-            _ => Ok(String::from("Should be unreachable")),
         }
     }
 
